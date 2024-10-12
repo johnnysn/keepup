@@ -14,11 +14,12 @@
 <div class="flex flex-col min-h-screen">
 	<header class="h-16">
 		<Wrapper class="flex justify-between items-center">
-			<div>KeepUp</div>
+			<a class="font-bold" href="/">KeepUp</a>
 
 			<div class="flex items-center gap-12">
 				<LightSwitch />
-				<nav>
+				<nav class="flex items-center gap-3">
+					<a href="/todo">Todo</a>
 					<a href="/about">About</a>
 				</nav>
 			</div>

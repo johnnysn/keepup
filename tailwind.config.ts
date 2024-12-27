@@ -9,5 +9,7 @@ export default {
 		extend: {}
 	},
 
+	darkMode: ['selector'],
+
 	plugins: [typography, forms]
 } satisfies Config;

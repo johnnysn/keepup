@@ -6,7 +6,7 @@
 </script>
 
 <div class="w-full">
-	<div class={cn(`mx-auto w-full max-w-screen-xl`, clazz)}>
+	<div class={cn(`mx-auto w-full max-w-screen-lg`, clazz)}>
 		<slot />
 	</div>
 </div>

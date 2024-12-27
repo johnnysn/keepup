@@ -1,8 +1,7 @@
 <script lang="ts">
-	import LightSwitch from '$lib/components/ui/LightSwitch.svelte';
 	import Wrapper from '$lib/components/ui/Wrapper.svelte';
 	import { ModeWatcher } from 'mode-watcher';
-	import '../app.css';
+	import '../app.pcss';
 	import Header from './Header.svelte';
 	let { children } = $props();
 </script>
@@ -17,7 +16,7 @@
 	<Header />
 
 	<main class="flex-1">
-		<Wrapper>
+		<Wrapper class="px-2 py-2 md:px-6">
 			{@render children()}
 		</Wrapper>
 	</main>

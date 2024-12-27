@@ -5,7 +5,7 @@
 
 <header>
 	<Wrapper class="my-2 flex items-center justify-between border ">
-		<a href="/"><img src="/KeepupTop.jpeg" height="64px" alt="Keepup logo" /></a>
+		<a href="/"><img src="/KeepupTop.jpeg" height="84px" alt="Keepup logo" /></a>
 
 		<div class="flex items-center gap-6 py-4 pr-2 md:pr-6">
 			<LightSwitch />

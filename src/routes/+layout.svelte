@@ -3,6 +3,7 @@
 	import Wrapper from '$lib/components/ui/Wrapper.svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.css';
+	import Header from './Header.svelte';
 	let { children } = $props();
 </script>
 
@@ -13,19 +14,7 @@
 <ModeWatcher />
 
 <div class="bg-grid dark:bg-crow flex min-h-screen flex-col">
-	<header class="p-8">
-		<Wrapper class="flex items-center justify-between">
-			<span>Keepup</span>
-
-			<div class="flex items-center gap-6">
-				<LightSwitch />
-				<nav class="flex items-center gap-3">
-					<a href="/config">Config</a>
-					<a href="/about">About</a>
-				</nav>
-			</div>
-		</Wrapper>
-	</header>
+	<Header />
 
 	<main class="flex-1">
 		<Wrapper>
@@ -34,7 +23,7 @@
 	</main>
 
 	<footer>
-		<Wrapper>
+		<Wrapper class="py-4">
 			<div class="text-center">Copyright &copy;2025</div>
 		</Wrapper>
 	</footer>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import TaskCheck from '$lib/components/TaskCheck.svelte';
 	import { tasks } from '$lib/store/tasks-store.svelte';
+	import AddForm from './AddForm.svelte';
 
 	const taskChecked = (checked: boolean, id: number) => {
 		const task = tasks.find((t) => t.id === id);
@@ -11,8 +12,7 @@
 	};
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<AddForm />
 
 <div class="flex flex-col gap-4 py-8">
 	{#each tasks as task (task.id)}

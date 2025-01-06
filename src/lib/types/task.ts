@@ -3,5 +3,6 @@ export interface Task {
 	name: string;
 	description?: string | undefined | null;
 	done: boolean;
+	recurrent: boolean;
 	date: Date;
 }

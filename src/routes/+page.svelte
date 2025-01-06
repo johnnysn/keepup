@@ -1,22 +1,6 @@
 <script lang="ts">
 	import TaskCheck from '$lib/components/TaskCheck.svelte';
-
-	const task1 = {
-		id: 1,
-		name: 'Do homework',
-		description: 'I have a few math problems to finish',
-		done: false,
-		date: new Date()
-	};
-
-	const task2 = {
-		id: 2,
-		name: 'Workout',
-		done: true,
-		date: new Date()
-	};
-
-	let tasks = $state([task1, task2]);
+	import { tasks } from '$lib/store/tasks-store.svelte';
 
 	const taskChecked = (checked: boolean, id: number) => {
 		const task = tasks.find((t) => t.id === id);

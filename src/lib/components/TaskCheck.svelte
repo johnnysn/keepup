@@ -10,7 +10,7 @@
 
 	const { task, onChecked }: Props = $props();
 	const id = `chk${task.id}`;
-	const labelClass = `${task.done ? 'line-through' : ''}`;
+	const labelClass = $derived(`${task.done ? 'line-through' : ''}`);
 </script>
 
 <div class="items-top flex space-x-2">
@@ -23,7 +23,7 @@
 			{task.name}
 		</Label>
 		{#if task.description}
-			<p class="text-muted-foreground text-sm">
+			<p class="text-sm text-muted-foreground">
 				{task.description}
 			</p>
 		{/if}

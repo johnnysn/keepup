@@ -16,7 +16,7 @@
 		date: new Date()
 	};
 
-	const tasks = $state([task1, task2]);
+	let tasks = $state([task1, task2]);
 
 	const taskChecked = (checked: boolean, id: number) => {
 		const task = tasks.find((t) => t.id === id);

@@ -6,6 +6,6 @@
 <form action="">
 	<div class="flex flex-col gap-1">
 		<Label>Name of the task</Label>
-		<Input name="name" placeholder="Enter a new task..." class="max-w-xs" />
+		<Input name="name" type="text" placeholder="Enter a new task..." class="max-w-xs" />
 	</div>
 </form>

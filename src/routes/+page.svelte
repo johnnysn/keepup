@@ -1,21 +1,16 @@
 <script lang="ts">
-	import TaskCheck from '$lib/components/TaskCheck.svelte';
+	import TaskItem from '$lib/components/TaskItem.svelte';
 	import { tasks } from '$lib/store/tasks-store.svelte';
 	import AddForm from './AddForm.svelte';
-
-	const taskChecked = (checked: boolean, id: number) => {
-		const task = tasks.find((t) => t.id === id);
-
-		if (task) {
-			task.done = checked;
-		}
-	};
+	import { fly } from 'svelte/transition';
 </script>
 
 <AddForm />
 
-<div class="flex flex-col gap-4 py-8">
-	{#each tasks as task (task.id)}
-		<TaskCheck {task} onChecked={(checked) => taskChecked(checked, task.id)} />
+<ul class="flex flex-col gap-4 py-8">
+	{#each tasks.data as task (task.id)}
+		<li transition:fly>
+			<TaskItem {task} />
+		</li>
 	{/each}
-</div>
+</ul>

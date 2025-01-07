@@ -3,6 +3,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { deleteTask, getTask } from '$lib/store/tasks-store.svelte';
 	import { type Task } from '$lib/types/task';
+	import { cn } from '$lib/utils';
 	import Button from './ui/button/button.svelte';
 	import { Trash2, Edit } from 'lucide-svelte';
 
@@ -36,15 +37,23 @@
 			for={id}
 			class={`text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${labelClass}`}
 		>
-			{task.name}
+			<input
+				type="text"
+				class={cn(
+					'w-[180px] border-none bg-transparent p-0 text-foreground focus:text-foreground focus:outline-none focus:ring-0',
+					labelClass
+				)}
+				bind:value={task.name}
+			/>
 		</Label>
-		{#if task.description}
-			<p class="text-sm text-muted-foreground">
-				{task.description}
-			</p>
-		{/if}
+		<input
+			type="text"
+			class="w-[180px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0"
+			placeholder="Add description"
+			bind:value={task.description}
+		/>
 	</div>
-	<div class="flex w-[80px] items-center gap-1">
+	<div class="items-top flex w-[80px] gap-1">
 		<Button variant="outline" size="icon" on:click={del}>
 			<Edit class="size-4" />
 		</Button>

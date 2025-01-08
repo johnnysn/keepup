@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { deleteTask, getTask } from '$lib/store/tasks-store.svelte';
+	import { deleteTask, getTask, tasks } from '$lib/store/tasks-store.svelte';
 	import { type Task } from '$lib/types/task';
 	import { cn } from '$lib/utils';
 	import Button from './ui/button/button.svelte';
@@ -14,6 +14,14 @@
 	const { task }: Props = $props();
 	const id = `chk${task.id}`;
 	const labelClass = $derived(`${task.done ? 'line-through' : ''}`);
+
+	let nameInput: HTMLInputElement;
+
+	$effect(() => {
+		if (task.id === tasks.empty?.id) {
+			nameInput.focus();
+		}
+	});
 
 	function check(checked: boolean) {
 		const objTask = getTask(task.id);
@@ -29,7 +37,7 @@
 </script>
 
 <div
-	class="items-top flex w-full max-w-xs space-x-2 rounded border border-transparent px-1 py-2 hover:border-border"
+	class="items-top flex w-full max-w-screen-sm space-x-2 rounded border border-transparent px-1 py-2 hover:border-border"
 >
 	<Checkbox {id} onCheckedChange={(checked) => check(!!checked)} checked={task.done} />
 	<div class="grid flex-1 items-center gap-1.5 leading-none">
@@ -44,6 +52,7 @@
 					labelClass
 				)}
 				bind:value={task.name}
+				bind:this={nameInput}
 			/>
 		</Label>
 		<input

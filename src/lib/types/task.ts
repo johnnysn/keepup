@@ -5,4 +5,5 @@ export interface Task {
 	done: boolean;
 	recurrent: boolean;
 	date: Date;
+	order: number;
 }

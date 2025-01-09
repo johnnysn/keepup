@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { deleteTask, getTask, tasks } from '$lib/store/tasks-store.svelte';
+	import { deleteTask, getTask } from '$lib/store/tasks-store.svelte';
 	import { type Task } from '$lib/types/task';
 	import { cn } from '$lib/utils';
 	import Button from './ui/button/button.svelte';
@@ -18,9 +18,9 @@
 	let nameInput: HTMLInputElement;
 
 	$effect(() => {
-		if (task.id === tasks.empty?.id) {
-			nameInput.focus();
-		}
+		// if (task.id === tasks.empty?.id) {
+		// 	nameInput.focus();
+		// }
 	});
 
 	function check(checked: boolean) {

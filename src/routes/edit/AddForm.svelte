@@ -3,18 +3,13 @@
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
-	import { addTask } from '$lib/store/tasks-store.svelte';
 
 	let name = $state('');
 	let description = $state('');
 	let recurrent = $state(false);
 
 	function submit() {
-		addTask({
-			name,
-			description,
-			recurrent
-		});
+		// TODO
 	}
 </script>
 

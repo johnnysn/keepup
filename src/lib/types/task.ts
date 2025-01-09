@@ -1,9 +1,8 @@
 export interface Task {
-	id: number;
+	id: string;
 	name: string;
-	description?: string | undefined | null;
+	description?: string | null;
 	done: boolean;
-	recurrent: boolean;
+	recurrent_id?: string | null;
 	date: Date;
-	order: number;
 }

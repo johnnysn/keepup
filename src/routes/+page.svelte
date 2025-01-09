@@ -1,13 +1,25 @@
 <script lang="ts">
 	import TaskItem from '$lib/components/TaskItem.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { addEmptyTask, addTask, tasks } from '$lib/store/tasks-store.svelte';
+	import { addNewTaskNow, tasks } from '$lib/store/tasks-store.svelte';
+	import type { Task } from '$lib/types/task';
+	import { formatDate } from '$lib/utils';
 	import { Plus } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 
 	function add() {
-		addEmptyTask(1);
+		addNewTaskNow();
 	}
+
+	let todayArray = $state<Task[]>([]);
+
+	$effect(() => {
+		const strDate = formatDate(new Date());
+
+		if (tasks.daily.has(strDate)) {
+			todayArray = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
+		}
+	});
 </script>
 
 <div class="my-2 flex justify-center">
@@ -18,7 +30,7 @@
 </div>
 
 <ul class="flex flex-col items-center gap-4 py-8">
-	{#each tasks.data as task (task.id)}
+	{#each todayArray as task (task.id)}
 		<li class="flex w-full justify-center" transition:fly>
 			<TaskItem {task} />
 		</li>

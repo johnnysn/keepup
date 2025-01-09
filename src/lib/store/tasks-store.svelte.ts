@@ -3,15 +3,17 @@ import { formatDate } from '$lib/utils';
 import { SvelteMap } from 'svelte/reactivity';
 
 type TasksState = {
-	data: Map<string, Task>;
+	data: SvelteMap<string, Task>;
 	daily: SvelteMap<string, string[]>;
 	recurrent: string[];
+	empty?: string | null;
 };
 
 export const tasks = $state<TasksState>({
-	data: new Map(),
+	data: new SvelteMap(),
 	daily: new SvelteMap(),
-	recurrent: []
+	recurrent: [],
+	empty: null
 });
 
 export function getTask(id: string) {
@@ -28,13 +30,13 @@ function getId() {
 
 export function addNewTaskNow(index?: number) {
 	const id = getId();
-	const task = {
+	const task = $state({
 		id,
 		name: '',
 		description: '',
 		date: new Date(),
 		done: false
-	};
+	});
 
 	tasks.data.set(id, task);
 	const strDate = formatDate(task.date);
@@ -51,7 +53,23 @@ export function addNewTaskNow(index?: number) {
 		todayArr.push(id);
 	}
 
-	console.log(tasks.daily);
+	// Gotta clear previously empty task
+	if (tasks.empty) {
+		deleteTask(tasks.empty);
+	}
+	tasks.empty = id;
+}
+
+export function patchTask(id: string, data: Partial<Task>) {
+	const task = getTask(id);
+
+	if (task) {
+		Object.assign(task, data);
+
+		if (task.id === tasks.empty && task.name.length > 0) {
+			tasks.empty = null;
+		}
+	}
 }
 
 export function deleteTask(id: string) {
@@ -67,5 +85,7 @@ export function deleteTask(id: string) {
 		}
 
 		tasks.data.delete(id);
+
+		if (tasks.empty === id) tasks.empty = null;
 	}
 }

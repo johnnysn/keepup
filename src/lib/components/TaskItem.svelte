@@ -5,7 +5,7 @@
 	import { type Task } from '$lib/types/task';
 	import { cn } from '$lib/utils';
 	import Button from './ui/button/button.svelte';
-	import { Trash2, Edit } from 'lucide-svelte';
+	import { Trash2, ChevronsDown, ChevronsUp } from 'lucide-svelte';
 
 	type Props = {
 		task: Task;
@@ -17,12 +17,14 @@
 	let nameInput: HTMLInputElement;
 	let nameValue = $state(task.name);
 	let descriptionValue = $state(task.description);
+	let editMode = $state(false);
 
 	const labelClass = $derived(`${task.done ? 'line-through' : ''}`);
 
 	$effect(() => {
 		if (task.id === tasks.empty) {
 			nameInput.focus();
+			editMode = true;
 		}
 	});
 
@@ -45,39 +47,64 @@
 </script>
 
 <div
-	class="items-top flex w-full max-w-screen-sm space-x-2 rounded border border-transparent px-1 py-2 hover:border-border"
+	class="flex w-full max-w-screen-sm flex-col rounded border border-transparent bg-background/40 px-2 py-2 hover:border-border"
 >
-	<Checkbox {id} onCheckedChange={(checked) => updateDone(!!checked)} />
-	<div class="grid flex-1 items-center gap-1.5 leading-none">
-		<Label
-			for={id}
-			class={`text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${labelClass}`}
-		>
+	<div class="flex w-full items-center space-x-2">
+		<Checkbox
+			{id}
+			onCheckedChange={(checked) => updateDone(!!checked)}
+			checked={task.done}
+			size={'lg'}
+		/>
+		<div class="grid flex-1 items-center gap-1.5 leading-none">
+			<Label
+				for={id}
+				class={`text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${labelClass}`}
+			>
+				<input
+					type="text"
+					class={cn(
+						'w-[180px] border-none bg-transparent p-0 text-foreground focus:text-foreground focus:outline-none focus:ring-0',
+						labelClass
+					)}
+					onblur={updateTask}
+					bind:value={nameValue}
+					bind:this={nameInput}
+				/>
+			</Label>
+		</div>
+		<div class="items-top flex w-[80px] gap-1">
+			<Button
+				variant="outline"
+				size="icon"
+				on:click={() => {
+					editMode = !editMode;
+				}}
+			>
+				{#if editMode}
+					<ChevronsUp class="size-4" />
+				{:else}
+					<ChevronsDown class="size-4" />
+				{/if}
+			</Button>
+			<Button variant="outline" size="icon" on:click={del}>
+				<Trash2 class="size-4" />
+			</Button>
+		</div>
+	</div>
+	{#if editMode}
+		<div class="flex flex-col pl-3">
+			<div class="flex items-center gap-2">
+				<Checkbox id={id + 'rec'} size={'sm'} />
+				<Label for={id + 'rec'} class="text-sm">Recurrent</Label>
+			</div>
 			<input
 				type="text"
-				class={cn(
-					'w-[180px] border-none bg-transparent p-0 text-foreground focus:text-foreground focus:outline-none focus:ring-0',
-					labelClass
-				)}
+				class="w-[180px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0"
+				placeholder="Add description here"
 				onblur={updateTask}
-				bind:value={nameValue}
-				bind:this={nameInput}
+				bind:value={descriptionValue}
 			/>
-		</Label>
-		<input
-			type="text"
-			class="w-[180px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0"
-			placeholder="Add description"
-			onblur={updateTask}
-			bind:value={descriptionValue}
-		/>
-	</div>
-	<div class="items-top flex w-[80px] gap-1">
-		<Button variant="outline" size="icon" on:click={del}>
-			<Edit class="size-4" />
-		</Button>
-		<Button variant="outline" size="icon" on:click={del}>
-			<Trash2 class="size-4" />
-		</Button>
-	</div>
+		</div>
+	{/if}
 </div>

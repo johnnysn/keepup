@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { deleteTask, patchTask, tasks } from '$lib/store/tasks-store.svelte';
+	import {
+		addRecurrency,
+		deleteTask,
+		patchTask,
+		removeRecurrency,
+		tasks
+	} from '$lib/store/tasks-store.svelte';
 	import { type Task } from '$lib/types/task';
 	import { cn } from '$lib/utils';
 	import Button from './ui/button/button.svelte';
@@ -19,6 +25,7 @@
 	let nameValue = $state(task.name);
 	let descriptionValue = $state(task.description);
 	let editMode = $state(false);
+	let isRecurrent = $derived(tasks.recurrent.has(task.name));
 
 	const labelClass = $derived(`${task.done ? 'line-through' : ''}`);
 
@@ -43,6 +50,11 @@
 
 	function del() {
 		deleteTask(task.id);
+	}
+
+	function onRecurrentChecked(checked: boolean) {
+		if (checked) addRecurrency(task.id);
+		else removeRecurrency(task.id);
 	}
 </script>
 
@@ -100,7 +112,12 @@
 	{#if editMode}
 		<div class="mt-2 flex flex-col gap-1.5 pl-3">
 			<div class="flex items-center gap-2">
-				<Checkbox id={id + 'rec'} size={'sm'} />
+				<Checkbox
+					id={id + 'rec'}
+					size={'sm'}
+					checked={isRecurrent}
+					onCheckedChange={(checked) => onRecurrentChecked(!!checked)}
+				/>
 				<Label for={id + 'rec'} class="text-sm">Recurrent</Label>
 			</div>
 			<input

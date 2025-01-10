@@ -1,8 +1,7 @@
 export interface Task {
 	id: string;
 	name: string;
-	description?: string | null;
+	description: string;
 	done: boolean;
-	recurrent_id?: string | null;
 	date: Date;
 }

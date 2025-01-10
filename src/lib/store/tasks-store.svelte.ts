@@ -1,18 +1,19 @@
 import type { Task } from '$lib/types/task';
+import type { TaskProto } from '$lib/types/task-proto';
 import { formatDate } from '$lib/utils';
 import { SvelteMap } from 'svelte/reactivity';
 
 type TasksState = {
 	data: SvelteMap<string, Task>;
 	daily: SvelteMap<string, string[]>;
-	recurrent: string[];
+	recurrent: SvelteMap<string, TaskProto>;
 	empty?: string | null;
 };
 
 export const tasks = $state<TasksState>({
 	data: new SvelteMap(),
 	daily: new SvelteMap(),
-	recurrent: [],
+	recurrent: new SvelteMap(),
 	empty: null
 });
 
@@ -64,6 +65,8 @@ export function patchTask(id: string, data: Partial<Task>) {
 	const task = getTask(id);
 
 	if (task) {
+		if (data.name) data.name = data.name.trim();
+		if (data.description) data.description = data.description.trim();
 		Object.assign(task, data);
 
 		if (task.id === tasks.empty && task.name.length > 0) {
@@ -87,5 +90,24 @@ export function deleteTask(id: string) {
 		tasks.data.delete(id);
 
 		if (tasks.empty === id) tasks.empty = null;
+	}
+}
+
+export function addRecurrency(id: string) {
+	const task = tasks.data.get(id);
+
+	if (task && !tasks.recurrent.has(task.name)) {
+		tasks.recurrent.set(task.name, {
+			name: task.name,
+			description: task.description
+		});
+	}
+}
+
+export function removeRecurrency(id: string) {
+	const task = tasks.data.get(id);
+
+	if (task && tasks.recurrent.has(task.name)) {
+		tasks.recurrent.delete(task.name);
 	}
 }

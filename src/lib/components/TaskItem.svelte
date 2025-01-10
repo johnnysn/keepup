@@ -15,6 +15,7 @@
 	const id = `chk${task.id}`;
 
 	let nameInput: HTMLInputElement;
+
 	let nameValue = $state(task.name);
 	let descriptionValue = $state(task.description);
 	let editMode = $state(false);
@@ -24,7 +25,6 @@
 	$effect(() => {
 		if (task.id === tasks.empty) {
 			nameInput.focus();
-			editMode = true;
 		}
 	});
 
@@ -46,8 +46,12 @@
 	}
 </script>
 
-<div
+<form
 	class="flex w-full max-w-screen-sm flex-col rounded border border-transparent bg-background/40 px-2 py-2 hover:border-border"
+	onsubmit={(e) => {
+		e.preventDefault();
+		nameInput.blur();
+	}}
 >
 	<div class="flex w-full items-center space-x-2">
 		<Checkbox
@@ -63,6 +67,7 @@
 			>
 				<input
 					type="text"
+					name="name"
 					class={cn(
 						'w-[180px] border-none bg-transparent p-0 text-foreground focus:text-foreground focus:outline-none focus:ring-0',
 						labelClass
@@ -93,13 +98,14 @@
 		</div>
 	</div>
 	{#if editMode}
-		<div class="flex flex-col pl-3">
+		<div class="mt-2 flex flex-col gap-1.5 pl-3">
 			<div class="flex items-center gap-2">
 				<Checkbox id={id + 'rec'} size={'sm'} />
 				<Label for={id + 'rec'} class="text-sm">Recurrent</Label>
 			</div>
 			<input
 				type="text"
+				name="description"
 				class="w-[180px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0"
 				placeholder="Add description here"
 				onblur={updateTask}
@@ -107,4 +113,4 @@
 			/>
 		</div>
 	{/if}
-</div>
+</form>

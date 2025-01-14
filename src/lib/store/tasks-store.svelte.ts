@@ -111,3 +111,15 @@ export function removeRecurrency(id: string) {
 		tasks.recurrent.delete(task.name);
 	}
 }
+
+export function updateDailyArrayOrder(items: Task[]) {
+	const strDate = formatDate(new Date());
+
+	if (tasks.daily.has(strDate)) {
+		const dailyArr = tasks.daily.get(strDate)!;
+
+		for (let i = 0; i < items.length; i++) {
+			dailyArr[i] = items[i].id;
+		}
+	}
+}

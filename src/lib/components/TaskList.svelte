@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { dragHandleZone, dragHandle } from 'svelte-dnd-action';
+	import { dragHandleZone, dragHandle, type DndEvent } from 'svelte-dnd-action';
 	import type { Task } from '$lib/types/task';
 	import { formatDate } from '$lib/utils';
-	import { tasks } from '$lib/store/tasks-store.svelte';
+	import { tasks, updateDailyArrayOrder } from '$lib/store/tasks-store.svelte';
 	import TaskItem from './TaskItem.svelte';
 	import { GripVertical } from 'lucide-svelte';
+	import { blur } from 'svelte/transition';
 
 	let items = $state<Task[]>([]);
 
@@ -18,11 +19,11 @@
 	});
 
 	const flipDurationMs = 300;
-	function handleDndConsider(e) {
+	function handleDndConsider(e: CustomEvent<DndEvent<Task>>) {
 		items = e.detail.items;
 	}
-	function handleDndFinalize(e) {
-		items = e.detail.items;
+	function handleDndFinalize(e: CustomEvent<DndEvent<Task>>) {
+		updateDailyArrayOrder(e.detail.items);
 	}
 </script>
 
@@ -35,6 +36,7 @@
 	{#each items as item (item.id)}
 		<li
 			animate:flip={{ duration: flipDurationMs }}
+			transition:blur
 			class="flex w-full max-w-screen-sm items-center rounded border border-transparent bg-background/40 hover:border-border"
 		>
 			<div use:dragHandle class="mx-1 text-foreground/50 hover:text-foreground">

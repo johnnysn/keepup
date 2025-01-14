@@ -1,12 +1,10 @@
 <script lang="ts">
-	import TaskItem from '$lib/components/TaskItem.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { addNewTaskNow, tasks } from '$lib/store/tasks-store.svelte';
 	import type { Task } from '$lib/types/task';
 	import { formatDate } from '$lib/utils';
 	import { Plus } from 'lucide-svelte';
-	import { fly } from 'svelte/transition';
 
 	function add() {
 		addNewTaskNow();

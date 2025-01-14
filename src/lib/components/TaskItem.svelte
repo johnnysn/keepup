@@ -46,6 +46,7 @@
 		patchTask(task.id, {
 			done: checked
 		});
+		editMode = false;
 	}
 
 	function del() {
@@ -59,7 +60,7 @@
 </script>
 
 <form
-	class="flex w-full max-w-screen-sm flex-col rounded border border-transparent bg-background/40 px-2 py-2 hover:border-border"
+	class="flex w-full flex-col px-2 py-2"
 	onsubmit={(e) => {
 		e.preventDefault();
 		nameInput.blur();
@@ -81,7 +82,7 @@
 					type="text"
 					name="name"
 					class={cn(
-						'w-[180px] border-none bg-transparent p-0 text-foreground focus:text-foreground focus:outline-none focus:ring-0',
+						'w-[180px] border-none bg-transparent p-0 text-foreground focus:text-foreground focus:outline-none focus:ring-0 md:w-full',
 						labelClass
 					)}
 					onblur={updateTask}

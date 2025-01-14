@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TaskItem from '$lib/components/TaskItem.svelte';
+	import TaskList from '$lib/components/TaskList.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { addNewTaskNow, tasks } from '$lib/store/tasks-store.svelte';
 	import type { Task } from '$lib/types/task';
@@ -29,10 +30,4 @@
 	</Button>
 </div>
 
-<ul class="flex flex-col items-center gap-4 py-8">
-	{#each todayArray as task (task.id)}
-		<li class="flex w-full justify-center" transition:fly>
-			<TaskItem {task} />
-		</li>
-	{/each}
-</ul>
+<TaskList />

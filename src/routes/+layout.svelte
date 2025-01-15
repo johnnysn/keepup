@@ -4,10 +4,27 @@
 	import '../app.pcss';
 	import Header from './Header.svelte';
 	import { cn } from '$lib/utils';
+	import { loadConfigFromLocalStorage } from '$lib/store/config-storage-service';
+	import { config } from '$lib/store/config-store.svelte';
+	import {
+		loadTasksFromLocalStorage,
+		saveTasksToLocalStorage
+	} from '$lib/store/tasks-storage-service.svelte';
 	let { children } = $props();
 
 	let c = $state('');
 	mode.subscribe((val) => (c = val === 'dark' ? 'dark' : ''));
+
+	$effect(() => {
+		loadConfigFromLocalStorage();
+		loadTasksFromLocalStorage();
+	});
+
+	$effect(() => {
+		const interval = setInterval(saveTasksToLocalStorage, config.saveInterval);
+
+		return () => clearInterval(interval);
+	});
 </script>
 
 <svelte:head>

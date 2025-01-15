@@ -3,7 +3,7 @@ import type { TaskProto } from '$lib/types/task-proto';
 import { formatDate } from '$lib/utils';
 import { SvelteMap } from 'svelte/reactivity';
 
-type TasksState = {
+export type TasksState = {
 	data: SvelteMap<string, Task>;
 	daily: SvelteMap<string, string[]>;
 	recurrent: SvelteMap<string, TaskProto>;
@@ -16,6 +16,10 @@ export const tasks = $state<TasksState>({
 	recurrent: new SvelteMap(),
 	empty: null
 });
+
+export function updateTasksState(state: TasksState) {
+	Object.assign(tasks, state);
+}
 
 export function getTask(id: string) {
 	return tasks.data.get(id);

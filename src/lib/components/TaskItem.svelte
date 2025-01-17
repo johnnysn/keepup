@@ -124,7 +124,7 @@
 			<input
 				type="text"
 				name="description"
-				class="w-[180px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0"
+				class="w-[270px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 md:w-full"
 				placeholder="Add description here"
 				onblur={updateTask}
 				bind:value={descriptionValue}

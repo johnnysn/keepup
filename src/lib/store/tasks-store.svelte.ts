@@ -127,3 +127,42 @@ export function updateDailyArrayOrder(items: Task[]) {
 		}
 	}
 }
+
+export function createTasksForDate(date: Date) {
+	const strDate = formatDate(date);
+
+	if (!tasks.daily.has(strDate)) {
+		const dateArr: string[] = [];
+
+		// Try to mirror the order from the previous day
+		const dayBefore = new Date(date);
+		dayBefore.setDate(date.getDate() - 1);
+		const strDateBefore = formatDate(date);
+
+		const yesterdayTasks = tasks.daily.get(strDateBefore);
+		if (yesterdayTasks) {
+			const tasksBefore = yesterdayTasks.map((id) => tasks.data.get(id)!);
+
+			for (let i = 0; i < tasksBefore.length; i++) {
+				const t = tasksBefore[i];
+				const proto = tasks.recurrent.get(t.name);
+				if (proto) {
+					const newTask = {
+						...proto,
+						done: false,
+						id: getId(),
+						date
+					};
+
+					tasks.data.set(newTask.id, newTask);
+					dateArr.push(newTask.id);
+				}
+			}
+		}
+
+		// Add the remaining recurrent tasks
+		const remainingProtos = []; // TODO
+
+		tasks.daily.set(strDate, dateArr);
+	}
+}

@@ -3,7 +3,12 @@
 	import { dragHandleZone, dragHandle, type DndEvent } from 'svelte-dnd-action';
 	import type { Task } from '$lib/types/task';
 	import { formatDate } from '$lib/utils';
-	import { addNewTaskNow, tasks, updateDailyArrayOrder } from '$lib/store/tasks-store.svelte';
+	import {
+		addNewTaskNow,
+		createTasksForDate,
+		tasks,
+		updateDailyArrayOrder
+	} from '$lib/store/tasks-store.svelte';
 	import TaskItem from './TaskItem.svelte';
 	import { GripVertical, Plus } from 'lucide-svelte';
 	// import { blur } from 'svelte/transition';
@@ -12,10 +17,13 @@
 	let items = $state<Task[]>([]);
 
 	$effect(() => {
-		const strDate = formatDate(new Date());
+		const today = new Date();
+		const strDate = formatDate(today);
 
 		if (tasks.daily.has(strDate)) {
 			items = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
+		} else {
+			createTasksForDate(today);
 		}
 	});
 

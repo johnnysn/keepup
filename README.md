@@ -20,3 +20,27 @@ To create a production version of the app:
 ```bash
 npm run build
 ```
+
+## Local storage
+
+Local storage data example:
+
+```json
+{
+	"data": [
+		[
+			"m659fk7q7irqaxhc2n",
+			{
+				"id": "m659fk7q7irqaxhc2n",
+				"name": "Test recurrent",
+				"description": "Crazy test for testing",
+				"date": "2025-01-19T16:27:57.590Z",
+				"done": true
+			}
+		]
+	],
+	"daily": [["2025-01-19", ["m659fk7q7irqaxhc2n"]]],
+	"recurrent": [["Test recurrent", { "name": "Test recurrent", "description": "" }]],
+	"empty": null
+}
+```

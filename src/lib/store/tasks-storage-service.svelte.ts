@@ -16,12 +16,9 @@ export function loadTasksFromLocalStorage() {
 		try {
 			const parsedData = JSON.parse(jsonData);
 			const validatedData = tasksStateSchema.parse(parsedData);
-			// console.log('Tasks data from the local storage has been succesfully parsed!');
-			// console.log(validatedData);
 
 			const data = deserializeTasksState(validatedData);
 
-			console.log(data);
 			updateTasksState(data);
 		} catch (error) {
 			console.error('There has been an error parsing local storage tasks data.');
@@ -41,9 +38,17 @@ function deserializeTasksState(parsedData: z.infer<typeof tasksStateSchema>): Ta
 		dataMap.set(id, taskState);
 	}
 
+	const dailyMap = new SvelteMap<string, string[]>();
+	for (const e of parsedData.daily) {
+		const key = e[0];
+		const arr = $state(e[1]);
+
+		dailyMap.set(key, arr);
+	}
+
 	return {
 		data: dataMap,
-		daily: new SvelteMap(parsedData.daily),
+		daily: dailyMap,
 		recurrent: new SvelteMap(parsedData.recurrent),
 		empty: parsedData.empty
 	};

@@ -52,7 +52,7 @@ export function addNewTaskNow(index?: number) {
 	}
 
 	const todayArr = tasks.daily.get(strDate)!;
-	if (index && index < todayArr.length) {
+	if (index !== undefined && index < todayArr.length) {
 		todayArr.splice(index, 0, id);
 	} else {
 		todayArr.push(id);
@@ -132,30 +132,31 @@ export function createTasksForDate(date: Date) {
 	const strDate = formatDate(date);
 
 	if (!tasks.daily.has(strDate)) {
-		const dateArr: string[] = [];
+		const dateArr: string[] = $state([]);
 
-		// Try to mirror the order from the previous day
-		const dayBefore = new Date(date);
-		dayBefore.setDate(date.getDate() - 1);
-		const strDateBefore = formatDate(date);
+		if (tasks.daily.size > 0) {
+			// Try to mirror the order from the previous day
+			const strDateBefore = [...tasks.daily.keys()].reduce((mostRecent, currentDate) =>
+				currentDate > mostRecent ? currentDate : mostRecent
+			);
+			const yesterdayTasks = tasks.daily.get(strDateBefore);
+			if (yesterdayTasks) {
+				const tasksBefore = yesterdayTasks.map((id) => tasks.data.get(id)!);
 
-		const yesterdayTasks = tasks.daily.get(strDateBefore);
-		if (yesterdayTasks) {
-			const tasksBefore = yesterdayTasks.map((id) => tasks.data.get(id)!);
+				for (let i = 0; i < tasksBefore.length; i++) {
+					const t = tasksBefore[i];
+					const proto = tasks.recurrent.get(t.name);
+					if (proto) {
+						const newTask = $state({
+							...proto,
+							done: false,
+							id: getId(),
+							date
+						});
 
-			for (let i = 0; i < tasksBefore.length; i++) {
-				const t = tasksBefore[i];
-				const proto = tasks.recurrent.get(t.name);
-				if (proto) {
-					const newTask = {
-						...proto,
-						done: false,
-						id: getId(),
-						date
-					};
-
-					tasks.data.set(newTask.id, newTask);
-					dateArr.push(newTask.id);
+						tasks.data.set(newTask.id, newTask);
+						dateArr.push(newTask.id);
+					}
 				}
 			}
 		}

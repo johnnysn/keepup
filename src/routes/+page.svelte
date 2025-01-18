@@ -7,7 +7,7 @@
 	import { Plus } from 'lucide-svelte';
 
 	function add() {
-		addNewTaskNow();
+		addNewTaskNow(0);
 	}
 
 	let todayArray = $state<Task[]>([]);

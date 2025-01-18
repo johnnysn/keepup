@@ -10,6 +10,7 @@
 		loadTasksFromLocalStorage,
 		saveTasksToLocalStorage
 	} from '$lib/store/tasks-storage-service.svelte';
+	import { createTasksForDate } from '$lib/store/tasks-store.svelte';
 	let { children } = $props();
 
 	let c = $state('');
@@ -18,11 +19,17 @@
 	$effect(() => {
 		loadConfigFromLocalStorage();
 		loadTasksFromLocalStorage();
+
+		console.log('Loading recurrent tasks...');
+		const id = setTimeout(() => {
+			createTasksForDate(new Date());
+		}, 1000);
+		return () => clearTimeout(id);
 	});
 
 	$effect(() => {
-		const interval = setInterval(saveTasksToLocalStorage, config.saveInterval);
-
+		const period = config.saveInterval;
+		const interval = setInterval(saveTasksToLocalStorage, period);
 		return () => clearInterval(interval);
 	});
 </script>
@@ -43,7 +50,7 @@
 	</main>
 
 	<footer>
-		<Wrapper class="py-4">
+		<Wrapper class="flex flex-col py-4">
 			<div class="text-center">Copyright &copy;2025</div>
 		</Wrapper>
 	</footer>

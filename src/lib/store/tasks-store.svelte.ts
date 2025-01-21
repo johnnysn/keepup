@@ -133,7 +133,7 @@ export function createTasksForDate(date: Date) {
 
 	if (!tasks.daily.has(strDate)) {
 		const dateArr: string[] = $state([]);
-
+		const addedNames = new Set<string>();
 		if (tasks.daily.size > 0) {
 			// Try to mirror the order from the previous day
 			const strDateBefore = [...tasks.daily.keys()].reduce((mostRecent, currentDate) =>
@@ -155,14 +155,29 @@ export function createTasksForDate(date: Date) {
 						});
 
 						tasks.data.set(newTask.id, newTask);
+						addedNames.add(newTask.name);
 						dateArr.push(newTask.id);
 					}
 				}
 			}
 		}
 
-		// Add the remaining recurrent tasks
-		const remainingProtos = []; // TODO
+		const remainingProtos = tasks.recurrent
+			.entries()
+			.filter((e) => !addedNames.has(e[0]))
+			.map((e) => e[1]);
+
+		for (const proto of remainingProtos) {
+			const newTask = $state({
+				...proto,
+				done: false,
+				id: getId(),
+				date
+			});
+
+			tasks.data.set(newTask.id, newTask);
+			dateArr.push(newTask.id);
+		}
 
 		tasks.daily.set(strDate, dateArr);
 	}

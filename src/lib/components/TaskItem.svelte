@@ -60,7 +60,7 @@
 </script>
 
 <form
-	class="flex w-full flex-col px-2 py-2"
+	class="flex w-full flex-col px-2 py-1"
 	onsubmit={(e) => {
 		e.preventDefault();
 		nameInput.blur();

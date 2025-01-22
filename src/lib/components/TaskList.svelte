@@ -37,7 +37,7 @@
 	use:dragHandleZone={{ items, flipDurationMs, dragDisabled: true }}
 	onconsider={handleDndConsider}
 	onfinalize={handleDndFinalize}
-	class="flex flex-col items-center gap-2 pb-2 pt-8"
+	class="flex flex-col items-center gap-1.5 pb-2 pt-8"
 >
 	{#each items as item (item.id)}
 		<li

@@ -17,9 +17,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      mode-watcher:
-        specifier: ^0.5.0
-        version: 0.5.0(svelte@5.17.3)
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
@@ -63,6 +60,9 @@ importers:
       lucide-svelte:
         specifier: ^0.469.0
         version: 0.469.0(svelte@5.17.3)
+      mode-watcher:
+        specifier: ^0.5.0
+        version: 0.5.0(svelte@5.17.3)
       prettier:
         specifier: ^3.3.2
         version: 3.4.2
@@ -81,6 +81,9 @@ importers:
       svelte-dnd-action:
         specifier: ^0.9.54
         version: 0.9.54(svelte@5.17.3)
+      svelte-sonner:
+        specifier: ^0.3.28
+        version: 0.3.28(svelte@5.17.3)
       tailwindcss:
         specifier: ^3.4.9
         version: 3.4.17
@@ -1729,6 +1732,11 @@ packages:
     peerDependenciesMeta:
       svelte:
         optional: true
+
+  svelte-sonner@0.3.28:
+    resolution: {integrity: sha512-K3AmlySeFifF/cKgsYNv5uXqMVNln0NBAacOYgmkQStLa/UoU0LhfAACU6Gr+YYC8bOCHdVmFNoKuDbMEsppJg==}
+    peerDependencies:
+      svelte: ^3.0.0 || ^4.0.0 || ^5.0.0-next.1
 
   svelte@5.17.3:
     resolution: {integrity: sha512-eLgtpR2JiTgeuNQRCDcLx35Z7Lu9Qe09GPOz+gvtR9nmIZu5xgFd6oFiLGQlxLD0/u7xVyF5AUkjDVyFHe6Bvw==}
@@ -3400,6 +3408,10 @@ snapshots:
       postcss: 8.4.49
       postcss-scss: 4.0.9(postcss@8.4.49)
     optionalDependencies:
+      svelte: 5.17.3
+
+  svelte-sonner@0.3.28(svelte@5.17.3):
+    dependencies:
       svelte: 5.17.3
 
   svelte@5.17.3:

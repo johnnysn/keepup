@@ -11,6 +11,8 @@
 		saveTasksToLocalStorage
 	} from '$lib/store/tasks-storage-service.svelte';
 	import { createTasksForDate } from '$lib/store/tasks-store.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
+	import { toast } from 'svelte-sonner';
 	let { children } = $props();
 
 	let c = $state('');
@@ -20,9 +22,14 @@
 		loadConfigFromLocalStorage();
 		loadTasksFromLocalStorage();
 
-		console.log('Loading recurrent tasks...');
+		// console.log('Loading recurrent tasks...');
+		const toastId = toast('Loading recurrent tasks...');
 		const id = setTimeout(() => {
 			createTasksForDate(new Date());
+			toast.success('Recurrent tasks loaded.', {
+				id: toastId,
+				duration: 500
+			});
 		}, 1000);
 		return () => clearTimeout(id);
 	});
@@ -39,6 +46,8 @@
 </svelte:head>
 
 <ModeWatcher />
+
+<Toaster />
 
 <div class="bg-grid dark:bg-crow flex min-h-screen flex-col">
 	<Header />

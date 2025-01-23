@@ -10,7 +10,7 @@
 		<div class="flex items-center gap-6 py-4 pr-2 md:pr-6">
 			<LightSwitch />
 			<nav class="flex items-center gap-3">
-				<a href="/config">Config</a>
+				<a href="/data">Data</a>
 				<a href="/about">About</a>
 			</nav>
 		</div>

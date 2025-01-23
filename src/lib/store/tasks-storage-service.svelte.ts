@@ -3,6 +3,7 @@ import { tasks, updateTasksState, type TasksState } from './tasks-store.svelte';
 import { tasksStateSchema } from '$lib/schemas/task-schema';
 import { z } from 'zod';
 import type { Task } from '$lib/types/task';
+import { downloadLocalStorageAsJson } from '$lib/utils';
 
 export function saveTasksToLocalStorage() {
 	const serializedData = serializeTasksState();
@@ -12,6 +13,10 @@ export function saveTasksToLocalStorage() {
 export function loadTasksFromLocalStorage() {
 	const jsonData = localStorage.getItem('tasksState');
 
+	loadTasksFromJsonData(jsonData);
+}
+
+function loadTasksFromJsonData(jsonData: string | null) {
 	if (jsonData) {
 		try {
 			const parsedData = JSON.parse(jsonData);
@@ -63,4 +68,8 @@ function serializeTasksState(): string {
 	};
 
 	return JSON.stringify(serializedState);
+}
+
+export function downloadTasksData() {
+	downloadLocalStorageAsJson('tasksState');
 }

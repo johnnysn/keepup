@@ -62,3 +62,35 @@ export function formatDate(date: Date) {
 
 	return `${year}-${month}-${day}`;
 }
+
+export function downloadLocalStorageAsJson(key: string): void {
+	const data = localStorage.getItem(key);
+
+	if (data === null) {
+		console.error(`No data found in localStorage with key: ${key}`);
+		return;
+	}
+
+	try {
+		const jsonData = JSON.parse(data);
+
+		const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+
+		const url = window.URL.createObjectURL(blob);
+
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${key}.json`;
+
+		document.body.appendChild(a);
+
+		// Trigger the click event on the link to start the download
+		a.click();
+
+		// Clean up: remove the link from the body and revoke the URL
+		document.body.removeChild(a);
+		window.URL.revokeObjectURL(url);
+	} catch (error) {
+		console.error('Error parsing data or creating download:', error);
+	}
+}

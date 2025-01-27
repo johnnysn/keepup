@@ -16,7 +16,7 @@ export function loadTasksFromLocalStorage() {
 	loadTasksFromJsonData(jsonData);
 }
 
-function loadTasksFromJsonData(jsonData: string | null) {
+export function loadTasksFromJsonData(jsonData: string | null) {
 	if (jsonData) {
 		try {
 			const parsedData = JSON.parse(jsonData);
@@ -26,10 +26,11 @@ function loadTasksFromJsonData(jsonData: string | null) {
 
 			updateTasksState(data);
 		} catch (error) {
-			console.error('There has been an error parsing local storage tasks data.');
+			console.error('There has been an error parsing the tasks data.');
 			if (error instanceof z.ZodError) {
 				console.error('Validation failed:', error.errors);
 			}
+			throw error;
 		}
 	}
 }

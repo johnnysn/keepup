@@ -13,31 +13,51 @@
 	import { createTasksForDate } from '$lib/store/tasks-store.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { toast } from 'svelte-sonner';
+	import { appState } from '$lib/store/application-store.svelte';
 	let { children } = $props();
 
 	let c = $state('');
 	mode.subscribe((val) => (c = val === 'dark' ? 'dark' : ''));
 
+	/// Load tasks from local storage
 	$effect(() => {
 		loadConfigFromLocalStorage();
 		loadTasksFromLocalStorage();
-
-		// console.log('Loading recurrent tasks...');
-		const toastId = toast('Loading recurrent tasks...');
-		const id = setTimeout(() => {
-			createTasksForDate(new Date());
-			toast.success('Recurrent tasks loaded.', {
-				id: toastId,
-				duration: 500
-			});
-		}, 1000);
-		return () => clearTimeout(id);
+		appState.storageReady = true;
 	});
 
+	/// Generate recurrent tasks
 	$effect(() => {
-		const period = config.saveInterval;
-		const interval = setInterval(saveTasksToLocalStorage, period);
-		return () => clearInterval(interval);
+		let id: number | undefined;
+
+		if (appState.storageReady) {
+			const toastId = toast('Loading recurrent tasks...');
+			id = setTimeout(() => {
+				createTasksForDate(new Date());
+				appState.recurrentReady = true;
+				toast.success('Recurrent tasks loaded.', {
+					id: toastId,
+					duration: 500
+				});
+			}, 1000);
+		}
+
+		return () => {
+			if (id) clearTimeout(id);
+		};
+	});
+
+	/// Save the tasks state periodically to the local storage
+	$effect(() => {
+		let interval: number | undefined;
+		if (appState.storageReady && appState.recurrentReady) {
+			const period = config.saveInterval;
+			interval = setInterval(saveTasksToLocalStorage, period);
+		}
+
+		return () => {
+			if (interval) clearInterval(interval);
+		};
 	});
 </script>
 

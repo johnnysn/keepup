@@ -6,6 +6,7 @@ import type { Task } from '$lib/types/task';
 import { downloadLocalStorageAsJson } from '$lib/utils';
 
 export function saveTasksToLocalStorage() {
+	// console.log('Saving tasks to local storage...');
 	const serializedData = serializeTasksState();
 	localStorage.setItem('tasksState', serializedData);
 }

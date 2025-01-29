@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { appState } from '$lib/store/application-store.svelte';
 	import {
 		downloadTasksData,
 		loadTasksFromJsonData
@@ -15,10 +16,13 @@
 			reader.onload = () => {
 				try {
 					// Parse the JSON file content
+					appState.storageReady = false;
 					loadTasksFromJsonData(reader.result as string);
 					toast.success('Tasks data successfully uploaded!');
 				} catch (e) {
 					toast.error('Error reading or parsing the JSON file');
+				} finally {
+					appState.storageReady = true;
 				}
 			};
 			reader.readAsText(file);

@@ -1,31 +1,21 @@
 <script lang="ts">
-	import TaskList from '$lib/components/TaskList.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { addNewTaskNow, tasks } from '$lib/store/tasks-store.svelte';
-	import type { Task } from '$lib/types/task';
+	import { addNewTaskNow } from '$lib/store/tasks-store.svelte';
+	import { goto } from '$app/navigation';
 	import { formatDate } from '$lib/utils';
-	import { Plus } from 'lucide-svelte';
 
 	function add() {
 		addNewTaskNow(0);
 	}
 
-	let todayArray = $state<Task[]>([]);
-
 	$effect(() => {
-		const strDate = formatDate(new Date());
-
-		if (tasks.daily.has(strDate)) {
-			todayArray = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
+		const content = localStorage.getItem('tasksState');
+		if (content) {
+			goto(`/tasks/${formatDate(new Date())}`);
 		}
 	});
 </script>
 
-<div class="my-2 flex justify-center">
-	<Button variant="ghost" size="lg" class="flex justify-center gap-1.5 text-lg" on:click={add}>
-		<Plus />
-		<span>Add task</span>
-	</Button>
-</div>
+<h1 class="mb-8 text-3xl font-bold">Hello, my friend!</h1>
 
-<TaskList />
+Please, start adding tasks to your day
+<a href={`/tasks/${formatDate(new Date())}`}>now</a>!

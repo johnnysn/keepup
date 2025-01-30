@@ -6,6 +6,7 @@ import { SvelteMap } from 'svelte/reactivity';
 export type TasksState = {
 	data: SvelteMap<string, Task>;
 	daily: SvelteMap<string, string[]>;
+	days: string[];
 	recurrent: SvelteMap<string, TaskProto>;
 	empty?: string | null;
 };
@@ -13,6 +14,7 @@ export type TasksState = {
 export const tasks = $state<TasksState>({
 	data: new SvelteMap(),
 	daily: new SvelteMap(),
+	days: [],
 	recurrent: new SvelteMap(),
 	empty: null
 });
@@ -180,5 +182,11 @@ export function createTasksForDate(date: Date) {
 		}
 
 		tasks.daily.set(strDate, dateArr);
+		createSortedArrayOfDays();
 	}
+}
+
+function createSortedArrayOfDays() {
+	tasks.days = Array.from(tasks.daily.keys());
+	tasks.days.sort();
 }

@@ -57,7 +57,8 @@ function deserializeTasksState(parsedData: z.infer<typeof tasksStateSchema>): Ta
 		data: dataMap,
 		daily: dailyMap,
 		recurrent: new SvelteMap(parsedData.recurrent),
-		empty: parsedData.empty
+		empty: parsedData.empty,
+		days: []
 	};
 }
 

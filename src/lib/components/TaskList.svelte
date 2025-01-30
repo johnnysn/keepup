@@ -9,12 +9,14 @@
 	// import { blur } from 'svelte/transition';
 	import Button from './ui/button/button.svelte';
 
+	type Props = {
+		strDate: string;
+	};
+
 	let items = $state<Task[]>([]);
+	let { strDate }: Props = $props();
 
 	$effect(() => {
-		const today = new Date();
-		const strDate = formatDate(today);
-
 		if (tasks.daily.has(strDate)) {
 			items = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
 		}
@@ -37,7 +39,7 @@
 	use:dragHandleZone={{ items, flipDurationMs, dragDisabled: true }}
 	onconsider={handleDndConsider}
 	onfinalize={handleDndFinalize}
-	class="flex flex-col items-center gap-1.5 pb-2 pt-8"
+	class="flex flex-col items-center gap-1.5 pb-2 pt-4"
 >
 	{#each items as item (item.id)}
 		<li

@@ -63,6 +63,15 @@ export function formatDate(date: Date) {
 	return `${year}-${month}-${day}`;
 }
 
+export function formatBasedOnLocale(date: Date) {
+	const formatter = new Intl.DateTimeFormat(navigator.language, {
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit'
+	});
+	return formatter.format(date);
+}
+
 export function downloadLocalStorageAsJson(key: string): void {
 	const data = localStorage.getItem(key);
 

@@ -67,7 +67,8 @@ export function formatBasedOnLocale(date: Date) {
 	const formatter = new Intl.DateTimeFormat(navigator.language, {
 		year: 'numeric',
 		month: '2-digit',
-		day: '2-digit'
+		day: '2-digit',
+		timeZone: 'UTC'
 	});
 	return formatter.format(date);
 }

@@ -35,6 +35,11 @@ function getId() {
 	return timestamp + randomPart + counter;
 }
 
+export function addEmptyDate(strDate: string) {
+	const arr = $state([]);
+	tasks.daily.set(strDate, arr);
+}
+
 export function addNewTaskNow(index?: number) {
 	const id = getId();
 	const task = $state({
@@ -49,8 +54,7 @@ export function addNewTaskNow(index?: number) {
 	const strDate = formatDate(task.date);
 
 	if (!tasks.daily.has(strDate)) {
-		const arr = $state([]);
-		tasks.daily.set(strDate, arr);
+		addEmptyDate(strDate);
 	}
 
 	const todayArr = tasks.daily.get(strDate)!;

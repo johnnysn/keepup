@@ -55,6 +55,12 @@ export const flyAndScale = (
 	};
 };
 
+export function dateFromStr(dateStr: string) {
+	const [year, month, day] = dateStr.split('-');
+
+	return new Date(Number(year), Number(month) - 1, Number(day));
+}
+
 export function formatDate(date: Date) {
 	const year = date.getFullYear();
 	const month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth() is 0-indexed, so add 1

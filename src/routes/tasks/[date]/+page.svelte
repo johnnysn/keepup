@@ -4,7 +4,7 @@
 	import {
 		addEmptyDate,
 		addNewTaskNow,
-		createTasksForDate,
+		createRecurrentTasks,
 		tasks
 	} from '$lib/store/tasks-store.svelte';
 	import type { Task } from '$lib/types/task';
@@ -21,23 +21,19 @@
 	tomorrow.setDate(tomorrow.getDate() + 1);
 	const strTomorrow = formatDate(tomorrow);
 
-	let currArray = $state<Task[]>([]);
 	let strDate = $derived(page.params.date);
 	let formattedDate = $derived(formatBasedOnLocale(new Date(page.params.date)));
 	let canGoForward = $derived(strDate !== strTomorrow);
 
 	$effect(() => {
 		if (tasks.daily.has(strDate)) {
-			currArray = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
 		} else {
 			const today = new Date();
 			const date = dateFromStr(strDate);
 			if (today.getTime() > date.getTime()) {
 				addEmptyDate(strDate);
-				currArray = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
 			} else if (strDate === strTomorrow) {
-				createTasksForDate(tomorrow);
-				currArray = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
+				createRecurrentTasks(tomorrow);
 			}
 		}
 	});

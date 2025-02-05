@@ -134,60 +134,66 @@ export function updateDailyArrayOrder(items: Task[]) {
 	}
 }
 
-export function createTasksForDate(date: Date) {
+export function createRecurrentTasks(date: Date) {
 	const strDate = formatDate(date);
 
-	if (!tasks.daily.has(strDate)) {
-		const dateArr: string[] = $state([]);
-		const addedNames = new Set<string>();
-		if (tasks.daily.size > 0) {
-			// Try to mirror the order from the previous day
-			const strDateBefore = [...tasks.daily.keys()].reduce((mostRecent, currentDate) =>
-				currentDate > mostRecent ? currentDate : mostRecent
-			);
-			const yesterdayTasks = tasks.daily.get(strDateBefore);
-			if (yesterdayTasks) {
-				const tasksBefore = yesterdayTasks.map((id) => tasks.data.get(id)!);
+	const newDateArr = $state([]);
+	const dateArr: string[] = tasks.daily.has(strDate) ? tasks.daily.get(strDate)! : newDateArr;
+	const addedNames = new Set<string>();
 
-				for (let i = 0; i < tasksBefore.length; i++) {
-					const t = tasksBefore[i];
-					const proto = tasks.recurrent.get(t.name);
-					if (proto) {
-						const newTask = $state({
-							...proto,
-							done: false,
-							id: getId(),
-							date
-						});
+	for (let existingId of dateArr) {
+		addedNames.add(tasks.data.get(existingId)!.name);
+	}
 
-						tasks.data.set(newTask.id, newTask);
-						addedNames.add(newTask.name);
-						dateArr.push(newTask.id);
-					}
+	if (tasks.daily.size > 0) {
+		// Try to mirror the order from the previous day
+		const strDateBefore = [...tasks.daily.keys()].reduce((mostRecent, currentDate) =>
+			currentDate > mostRecent ? currentDate : mostRecent
+		);
+		const dateBeforeTasksIds = tasks.daily.get(strDateBefore);
+		if (dateBeforeTasksIds) {
+			const tasksBefore = dateBeforeTasksIds
+				.map((id) => tasks.data.get(id)!)
+				.filter((t) => !addedNames.has(t.name));
+
+			for (let i = 0; i < tasksBefore.length; i++) {
+				const t = tasksBefore[i];
+				const proto = tasks.recurrent.get(t.name);
+				if (proto) {
+					const newTask = $state({
+						...proto,
+						done: false,
+						id: getId(),
+						date
+					});
+
+					tasks.data.set(newTask.id, newTask);
+					addedNames.add(newTask.name);
+					dateArr.push(newTask.id);
 				}
 			}
 		}
-
-		const remainingProtos = tasks.recurrent
-			.entries()
-			.filter((e) => !addedNames.has(e[0]))
-			.map((e) => e[1]);
-
-		for (const proto of remainingProtos) {
-			const newTask = $state({
-				...proto,
-				done: false,
-				id: getId(),
-				date
-			});
-
-			tasks.data.set(newTask.id, newTask);
-			dateArr.push(newTask.id);
-		}
-
-		tasks.daily.set(strDate, dateArr);
-		createSortedArrayOfDays();
 	}
+
+	const remainingProtos = tasks.recurrent
+		.entries()
+		.filter((e) => !addedNames.has(e[0]))
+		.map((e) => e[1]);
+
+	for (const proto of remainingProtos) {
+		const newTask = $state({
+			...proto,
+			done: false,
+			id: getId(),
+			date
+		});
+
+		tasks.data.set(newTask.id, newTask);
+		dateArr.push(newTask.id);
+	}
+
+	tasks.daily.set(strDate, dateArr);
+	createSortedArrayOfDays();
 }
 
 function createSortedArrayOfDays() {

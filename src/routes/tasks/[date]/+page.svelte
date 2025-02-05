@@ -7,7 +7,6 @@
 		createRecurrentTasks,
 		tasks
 	} from '$lib/store/tasks-store.svelte';
-	import type { Task } from '$lib/types/task';
 	import { Plus, ChevronLeft, ChevronRight } from 'lucide-svelte';
 	import { page } from '$app/state';
 	import { dateFromStr, formatBasedOnLocale, formatDate } from '$lib/utils';
@@ -57,6 +56,10 @@
 
 		goto(`/tasks/${strNext}`);
 	}
+
+	function reloadClick() {
+		createRecurrentTasks(tomorrow);
+	}
 </script>
 
 <div class="flex items-center justify-center gap-16">
@@ -82,3 +85,11 @@
 </div>
 
 <TaskList {strDate} />
+
+{#if strDate === strTomorrow}
+	<div class="mt-6 flex flex-col items-center">
+		<div class="flex w-full max-w-screen-sm justify-end">
+			<Button onclick={reloadClick}>Reload recurrent tasks</Button>
+		</div>
+	</div>
+{/if}

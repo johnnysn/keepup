@@ -48,8 +48,15 @@ function deserializeTasksState(parsedData: z.infer<typeof tasksStateSchema>): Ta
 	const dailyMap = new SvelteMap<string, string[]>();
 	for (const e of parsedData.daily) {
 		const key = e[0];
-		const arr = $state(e[1]);
+		const idsArray = e[1];
+		const cleanupArray = [];
 
+		// Cleaning up daily array
+		for (const id of idsArray) {
+			if (dataMap.has(id)) cleanupArray.push(id);
+		}
+
+		const arr = $state(cleanupArray);
 		dailyMap.set(key, arr);
 	}
 

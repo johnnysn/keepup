@@ -2,12 +2,12 @@
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, dragHandle, type DndEvent } from 'svelte-dnd-action';
 	import type { Task } from '$lib/types/task';
-	import { formatDate } from '$lib/utils';
 	import { addNewTaskNow, tasks, updateDailyArrayOrder } from '$lib/store/tasks-store.svelte';
 	import TaskItem from './TaskItem.svelte';
 	import { GripVertical, Plus } from 'lucide-svelte';
 	// import { blur } from 'svelte/transition';
 	import Button from './ui/button/button.svelte';
+	import { dateFromStr } from '$lib/utils';
 
 	type Props = {
 		strDate: string;
@@ -18,7 +18,11 @@
 
 	$effect(() => {
 		if (tasks.daily.has(strDate)) {
-			items = tasks.daily.get(strDate)!.map((id) => tasks.data.get(id)!);
+			items = tasks.daily
+				.get(strDate)!
+				// .filter((id) => tasks.data.has(id))
+				.map((id) => tasks.data.get(id)!);
+			// console.log(items);
 		}
 	});
 
@@ -31,7 +35,7 @@
 		updateDailyArrayOrder(e.detail.items);
 	}
 	function addTask() {
-		addNewTaskNow(items.length);
+		addNewTaskNow(items.length, dateFromStr(strDate));
 	}
 </script>
 

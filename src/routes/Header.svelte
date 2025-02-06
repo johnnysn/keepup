@@ -1,6 +1,9 @@
 <script lang="ts">
 	import LightSwitch from '$lib/components/ui/LightSwitch.svelte';
 	import Wrapper from '$lib/components/ui/Wrapper.svelte';
+	import { formatDate } from '$lib/utils';
+
+	const todayStr = formatDate(new Date());
 </script>
 
 <header>
@@ -10,8 +13,8 @@
 		<div class="flex items-center gap-6 py-4 pr-2 md:pr-6">
 			<LightSwitch />
 			<nav class="flex items-center gap-3">
+				<a href={`/tasks/${todayStr}`}>Tasks</a>
 				<a href="/data">Data</a>
-				<a href="/about">About</a>
 			</nav>
 		</div>
 	</Wrapper>

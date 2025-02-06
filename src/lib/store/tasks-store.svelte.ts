@@ -40,13 +40,13 @@ export function addEmptyDate(strDate: string) {
 	tasks.daily.set(strDate, arr);
 }
 
-export function addNewTaskNow(index?: number) {
+export function addNewTaskNow(index?: number, date?: Date) {
 	const id = getId();
 	const task = $state({
 		id,
 		name: '',
 		description: '',
-		date: new Date(),
+		date: date ?? new Date(),
 		done: false
 	});
 
@@ -95,7 +95,11 @@ export function deleteTask(id: string) {
 			const index = arr.findIndex((s) => s === id);
 
 			if (index > -1) arr.splice(index, 1);
+			console.log($state.snapshot(arr));
 		}
+
+		const strDateToday = formatDate(new Date());
+		if (strDate === strDateToday) removeRecurrency(id);
 
 		tasks.data.delete(id);
 
@@ -142,17 +146,16 @@ export function createRecurrentTasks(date: Date) {
 	const addedNames = new Set<string>();
 
 	for (let existingId of dateArr) {
-		addedNames.add(tasks.data.get(existingId)!.name);
+		if (tasks.data.has(existingId)) addedNames.add(tasks.data.get(existingId)!.name);
 	}
 
 	if (tasks.daily.size > 0) {
 		// Try to mirror the order from the previous day
-		const strDateBefore = [...tasks.daily.keys()].reduce((mostRecent, currentDate) =>
-			currentDate > mostRecent ? currentDate : mostRecent
-		);
-		const dateBeforeTasksIds = tasks.daily.get(strDateBefore);
-		if (dateBeforeTasksIds) {
-			const tasksBefore = dateBeforeTasksIds
+		const dayBeforeIndex = tasks.days.findIndex((sd) => sd === strDate);
+		const dayBeforeDateStr = dayBeforeIndex > 0 ? tasks.days[dayBeforeIndex - 1] : 'nope';
+		const dayBeforeTasksIds = tasks.daily.get(dayBeforeDateStr);
+		if (dayBeforeTasksIds) {
+			const tasksBefore = dayBeforeTasksIds
 				.map((id) => tasks.data.get(id)!)
 				.filter((t) => !addedNames.has(t.name));
 

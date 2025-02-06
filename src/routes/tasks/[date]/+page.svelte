@@ -13,7 +13,7 @@
 	import { goto } from '$app/navigation';
 
 	function add() {
-		addNewTaskNow(0);
+		addNewTaskNow(0, dateFromStr(page.params.date));
 	}
 
 	const tomorrow = new Date();
@@ -32,7 +32,7 @@
 			if (today.getTime() > date.getTime()) {
 				addEmptyDate(strDate);
 			} else if (strDate === strTomorrow) {
-				createRecurrentTasks(tomorrow);
+				addEmptyDate(strTomorrow);
 			}
 		}
 	});
@@ -89,7 +89,7 @@
 {#if strDate === strTomorrow}
 	<div class="mt-6 flex flex-col items-center">
 		<div class="flex w-full max-w-screen-sm justify-end">
-			<Button onclick={reloadClick}>Reload recurrent tasks</Button>
+			<Button onclick={reloadClick}>Load recurrent tasks</Button>
 		</div>
 	</div>
 {/if}

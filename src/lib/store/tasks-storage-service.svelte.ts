@@ -1,9 +1,10 @@
 import { SvelteMap } from 'svelte/reactivity';
-import { tasks, updateTasksState, type TasksState } from './tasks-store.svelte';
 import { tasksStateSchema } from '$lib/schemas/task-schema';
 import { z } from 'zod';
 import type { Task } from '$lib/types/task';
 import { downloadLocalStorageAsJson } from '$lib/utils';
+import { tasks, updateTasksState } from './tasks-store.svelte';
+import type { TasksState } from '$lib/types/tasks-state';
 
 export function saveTasksToLocalStorage() {
 	// console.log('Saving tasks to local storage...');
@@ -37,9 +38,9 @@ export function loadTasksFromJsonData(jsonData: string | null) {
 }
 
 function deserializeTasksState(parsedData: z.infer<typeof tasksStateSchema>): TasksState {
-	const dataMap = new SvelteMap<string, Task>();
+	const dataMap = new Map<string, Task>();
 	for (const t of parsedData.data) {
-		const taskState = $state(t[1]);
+		const taskState = t[1];
 		const id = t[0];
 
 		dataMap.set(id, taskState);
@@ -56,16 +57,14 @@ function deserializeTasksState(parsedData: z.infer<typeof tasksStateSchema>): Ta
 			if (dataMap.has(id)) cleanupArray.push(id);
 		}
 
-		const arr = $state(cleanupArray);
+		const arr = cleanupArray;
 		dailyMap.set(key, arr);
 	}
 
 	return {
 		data: dataMap,
 		daily: dailyMap,
-		recurrent: new SvelteMap(parsedData.recurrent),
-		empty: parsedData.empty,
-		days: []
+		recurrent: new SvelteMap(parsedData.recurrent)
 	};
 }
 
@@ -73,8 +72,7 @@ function serializeTasksState(): string {
 	const serializedState = {
 		data: Array.from(tasks.data.entries()),
 		daily: Array.from(tasks.daily.entries()),
-		recurrent: Array.from(tasks.recurrent.entries()),
-		empty: tasks.empty
+		recurrent: Array.from(tasks.recurrent.entries())
 	};
 
 	return JSON.stringify(serializedState);

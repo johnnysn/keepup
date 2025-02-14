@@ -1,23 +1,12 @@
 import type { Task } from '$lib/types/task';
-import type { TaskProto } from '$lib/types/task-proto';
+import type { TasksState } from '$lib/types/tasks-state';
 import { formatDate } from '$lib/utils';
-import { SvelteMap } from 'svelte/reactivity';
 
-export type TasksState = {
-	data: SvelteMap<string, Task>;
-	daily: SvelteMap<string, string[]>;
-	days: string[];
-	recurrent: SvelteMap<string, TaskProto>;
-	empty?: string | null;
+export const tasks: TasksState = {
+	data: new Map(),
+	daily: new Map(),
+	recurrent: new Map()
 };
-
-export const tasks = $state<TasksState>({
-	data: new SvelteMap(),
-	daily: new SvelteMap(),
-	days: [],
-	recurrent: new SvelteMap(),
-	empty: null
-});
 
 export function updateTasksState(state: TasksState) {
 	Object.assign(tasks, state);
@@ -36,19 +25,19 @@ function getId() {
 }
 
 export function addEmptyDate(strDate: string) {
-	const arr = $state([]);
+	const arr: string[] = [];
 	tasks.daily.set(strDate, arr);
 }
 
 export function addNewTaskNow(index?: number, date?: Date) {
 	const id = getId();
-	const task = $state({
+	const task = {
 		id,
 		name: '',
 		description: '',
 		date: date ?? new Date(),
 		done: false
-	});
+	};
 
 	tasks.data.set(id, task);
 	const strDate = formatDate(task.date);
@@ -63,12 +52,6 @@ export function addNewTaskNow(index?: number, date?: Date) {
 	} else {
 		todayArr.push(id);
 	}
-
-	// Gotta clear previously empty task
-	if (tasks.empty) {
-		deleteTask(tasks.empty);
-	}
-	tasks.empty = id;
 }
 
 export function patchTask(id: string, data: Partial<Task>) {
@@ -78,10 +61,6 @@ export function patchTask(id: string, data: Partial<Task>) {
 		if (data.name) data.name = data.name.trim();
 		if (data.description) data.description = data.description.trim();
 		Object.assign(task, data);
-
-		if (task.id === tasks.empty && task.name.length > 0) {
-			tasks.empty = null;
-		}
 	}
 }
 
@@ -102,8 +81,6 @@ export function deleteTask(id: string) {
 		if (strDate === strDateToday) removeRecurrency(id);
 
 		tasks.data.delete(id);
-
-		if (tasks.empty === id) tasks.empty = null;
 	}
 }
 
@@ -151,8 +128,11 @@ export function createRecurrentTasks(date: Date) {
 
 	if (tasks.daily.size > 0) {
 		// Try to mirror the order from the previous day
-		const dayBeforeIndex = tasks.days.findIndex((sd) => sd === strDate);
-		const dayBeforeDateStr = dayBeforeIndex > 0 ? tasks.days[dayBeforeIndex - 1] : 'nope';
+		const days = Array.from(tasks.daily.keys());
+		days.sort((a, b) => a.localeCompare(b));
+		const dayBeforeIndex = days.findIndex((sd) => sd === strDate);
+		const dayBeforeDateStr = dayBeforeIndex > 0 ? days[dayBeforeIndex - 1] : 'nope';
+
 		const dayBeforeTasksIds = tasks.daily.get(dayBeforeDateStr);
 		if (dayBeforeTasksIds) {
 			const tasksBefore = dayBeforeTasksIds
@@ -196,10 +176,4 @@ export function createRecurrentTasks(date: Date) {
 	}
 
 	tasks.daily.set(strDate, dateArr);
-	createSortedArrayOfDays();
-}
-
-function createSortedArrayOfDays() {
-	tasks.days = Array.from(tasks.daily.keys());
-	tasks.days.sort();
 }

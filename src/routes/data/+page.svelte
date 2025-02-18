@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { appState } from '$lib/store/application-store.svelte';
 	import {
 		downloadTasksData,
@@ -38,6 +39,15 @@
 	<div class="flex flex-col items-center gap-6">
 		<Button onclick={downloadTasksData} class="w-[300px]">Download data as JSON</Button>
 		<Button onclick={() => fileInput.click()} class="w-[300px]">Upload JSON data</Button>
+
+		<div class="flex items-center gap-2">
+			<Checkbox
+				id="autosave"
+				bind:checked={appState.enableAutoSave}
+				aria-labelledby="terms-label"
+			/>
+			<label for="autosave">Enable auto-save</label>
+		</div>
 
 		<input
 			type="file"

@@ -1,4 +1,5 @@
 export const appState = $state({
 	storageReady: false,
-	recurrentReady: false
+	recurrentReady: false,
+	enableAutoSave: true
 });

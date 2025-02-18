@@ -6,25 +6,19 @@ import { SvelteMap } from 'svelte/reactivity';
 export type TasksState = {
 	data: SvelteMap<string, Task>;
 	daily: SvelteMap<string, string[]>;
-	days: string[];
 	recurrent: SvelteMap<string, TaskProto>;
-	empty?: string | null;
 };
 
 export const tasks = $state<TasksState>({
 	data: new SvelteMap(),
 	daily: new SvelteMap(),
-	days: [],
-	recurrent: new SvelteMap(),
-	empty: null
+	recurrent: new SvelteMap()
 });
 
 export function updateTasksState(state: TasksState) {
-	Object.assign(tasks, state);
-}
-
-export function getTask(id: string) {
-	return tasks.data.get(id);
+	tasks.daily = state.daily;
+	tasks.recurrent = state.recurrent;
+	tasks.data = state.data;
 }
 
 function getId() {
@@ -63,25 +57,15 @@ export function addNewTaskNow(index?: number, date?: Date) {
 	} else {
 		todayArr.push(id);
 	}
-
-	// Gotta clear previously empty task
-	if (tasks.empty) {
-		deleteTask(tasks.empty);
-	}
-	tasks.empty = id;
 }
 
 export function patchTask(id: string, data: Partial<Task>) {
-	const task = getTask(id);
+	const task = tasks.data.get(id);
 
 	if (task) {
 		if (data.name) data.name = data.name.trim();
 		if (data.description) data.description = data.description.trim();
 		Object.assign(task, data);
-
-		if (task.id === tasks.empty && task.name.length > 0) {
-			tasks.empty = null;
-		}
 	}
 }
 
@@ -95,15 +79,13 @@ export function deleteTask(id: string) {
 			const index = arr.findIndex((s) => s === id);
 
 			if (index > -1) arr.splice(index, 1);
-			console.log($state.snapshot(arr));
+			// console.log($state.snapshot(arr));
 		}
 
 		const strDateToday = formatDate(new Date());
 		if (strDate === strDateToday) removeRecurrency(id);
 
 		tasks.data.delete(id);
-
-		if (tasks.empty === id) tasks.empty = null;
 	}
 }
 
@@ -151,8 +133,11 @@ export function createRecurrentTasks(date: Date) {
 
 	if (tasks.daily.size > 0) {
 		// Try to mirror the order from the previous day
-		const dayBeforeIndex = tasks.days.findIndex((sd) => sd === strDate);
-		const dayBeforeDateStr = dayBeforeIndex > 0 ? tasks.days[dayBeforeIndex - 1] : 'nope';
+		const days = Array.from(tasks.daily.keys());
+		days.sort((a, b) => a.localeCompare(b));
+		const dayBeforeIndex = days.findIndex((sd) => sd === strDate);
+		const dayBeforeDateStr = dayBeforeIndex > 0 ? days[dayBeforeIndex - 1] : 'nope';
+
 		const dayBeforeTasksIds = tasks.daily.get(dayBeforeDateStr);
 		if (dayBeforeTasksIds) {
 			const tasksBefore = dayBeforeTasksIds
@@ -196,10 +181,4 @@ export function createRecurrentTasks(date: Date) {
 	}
 
 	tasks.daily.set(strDate, dateArr);
-	createSortedArrayOfDays();
-}
-
-function createSortedArrayOfDays() {
-	tasks.days = Array.from(tasks.daily.keys());
-	tasks.days.sort();
 }

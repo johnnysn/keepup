@@ -52,7 +52,9 @@
 		let interval: number | undefined;
 		if (appState.storageReady && appState.recurrentReady) {
 			const period = config.saveInterval;
-			interval = setInterval(saveTasksToLocalStorage, period);
+			interval = setInterval(() => {
+				if (appState.enableAutoSave) saveTasksToLocalStorage();
+			}, period);
 		}
 
 		return () => {

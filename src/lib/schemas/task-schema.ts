@@ -28,6 +28,5 @@ const taskProtoSchema = z.object({
 export const tasksStateSchema = z.object({
 	data: z.array(z.tuple([z.string().min(1, 'The id is required'), taskSchema])),
 	daily: z.array(z.tuple([z.string(), z.array(z.string().min(1, 'The id is required'))])),
-	recurrent: z.array(z.tuple([z.string(), taskProtoSchema])),
-	empty: z.union([z.string().nullable(), z.null()])
+	recurrent: z.array(z.tuple([z.string(), taskProtoSchema]))
 });

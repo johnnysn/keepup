@@ -63,9 +63,7 @@ function deserializeTasksState(parsedData: z.infer<typeof tasksStateSchema>): Ta
 	return {
 		data: dataMap,
 		daily: dailyMap,
-		recurrent: new SvelteMap(parsedData.recurrent),
-		empty: parsedData.empty,
-		days: []
+		recurrent: new SvelteMap(parsedData.recurrent)
 	};
 }
 
@@ -73,8 +71,7 @@ function serializeTasksState(): string {
 	const serializedState = {
 		data: Array.from(tasks.data.entries()),
 		daily: Array.from(tasks.daily.entries()),
-		recurrent: Array.from(tasks.recurrent.entries()),
-		empty: tasks.empty
+		recurrent: Array.from(tasks.recurrent.entries())
 	};
 
 	return JSON.stringify(serializedState);

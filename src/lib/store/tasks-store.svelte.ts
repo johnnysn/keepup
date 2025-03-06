@@ -30,8 +30,7 @@ function getId() {
 }
 
 export function addEmptyDate(strDate: string) {
-	const arr = $state([]);
-	tasks.daily.set(strDate, arr);
+	tasks.daily.set(strDate, []);
 }
 
 export function addNewTaskNow(index?: number, date?: Date) {
@@ -47,16 +46,14 @@ export function addNewTaskNow(index?: number, date?: Date) {
 	tasks.data.set(id, task);
 	const strDate = formatDate(task.date);
 
-	if (!tasks.daily.has(strDate)) {
-		addEmptyDate(strDate);
-	}
-
-	const todayArr = tasks.daily.get(strDate)!;
+	const todayArr = tasks.daily.has(strDate) ? [...tasks.daily.get(strDate)!] : [];
 	if (index !== undefined && index < todayArr.length) {
 		todayArr.splice(index, 0, id);
 	} else {
 		todayArr.push(id);
 	}
+
+	tasks.daily.set(strDate, todayArr);
 }
 
 export function patchTask(id: string, data: Partial<Task>) {
@@ -75,17 +72,15 @@ export function deleteTask(id: string) {
 	if (task) {
 		const strDate = formatDate(task.date);
 		if (tasks.daily.has(strDate)) {
-			const arr = tasks.daily.get(strDate)!;
-			const index = arr.findIndex((s) => s === id);
-
-			if (index > -1) arr.splice(index, 1);
-			// console.log($state.snapshot(arr));
+			const arr = tasks.daily.get(strDate)!.filter((s) => s !== id);
+			tasks.daily.set(strDate, arr);
 		}
 
 		const strDateToday = formatDate(new Date());
 		if (strDate === strDateToday) removeRecurrency(id);
 
-		tasks.data.delete(id);
+		const deleted = tasks.data.delete(id);
+		// console.log(`Deleted ${id}: ${deleted}`);
 	}
 }
 
@@ -112,19 +107,20 @@ export function updateDailyArrayOrder(items: Task[]) {
 	const strDate = formatDate(new Date());
 
 	if (tasks.daily.has(strDate)) {
-		const dailyArr = tasks.daily.get(strDate)!;
+		const dailyArr = [...tasks.daily.get(strDate)!];
 
 		for (let i = 0; i < items.length; i++) {
 			dailyArr[i] = items[i].id;
 		}
+
+		tasks.daily.set(strDate, dailyArr);
 	}
 }
 
 export function createRecurrentTasks(date: Date) {
 	const strDate = formatDate(date);
 
-	const newDateArr = $state([]);
-	const dateArr: string[] = tasks.daily.has(strDate) ? tasks.daily.get(strDate)! : newDateArr;
+	const dateArr: string[] = tasks.daily.has(strDate) ? [...tasks.daily.get(strDate)!] : [];
 	const addedNames = new Set<string>();
 
 	for (let existingId of dateArr) {

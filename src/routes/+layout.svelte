@@ -14,13 +14,14 @@
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { toast } from 'svelte-sonner';
 	import { appState } from '$lib/store/application-store.svelte';
+	import { onMount } from 'svelte';
 	let { children } = $props();
 
 	let c = $state('');
 	mode.subscribe((val) => (c = val === 'dark' ? 'dark' : ''));
 
 	/// Load tasks from local storage
-	$effect(() => {
+	onMount(() => {
 		loadConfigFromLocalStorage();
 		loadTasksFromLocalStorage();
 		appState.storageReady = true;

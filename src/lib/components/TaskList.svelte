@@ -31,7 +31,7 @@
 		items = e.detail.items;
 	}
 	function handleDndFinalize(e: CustomEvent<DndEvent<Task>>) {
-		items = e.detail.items;
+		// items = e.detail.items;
 		updateDailyArrayOrder(e.detail.items);
 	}
 	function addTask() {

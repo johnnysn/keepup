@@ -30,9 +30,9 @@
 	const labelClass = $derived(`${task.done ? 'line-through' : ''}`);
 
 	$effect(() => {
-		if (task.id === tasks.empty) {
-			nameInput.focus();
-		}
+		// if (task.id === tasks.empty) {
+		// 	nameInput.focus();
+		// }
 	});
 
 	function updateTask() {

@@ -4,7 +4,8 @@
 	import { appState } from '$lib/store/application-store.svelte';
 	import {
 		downloadTasksData,
-		loadTasksFromJsonData
+		loadTasksFromJsonData,
+		eraseAllData
 	} from '$lib/store/tasks-storage-service.svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -39,6 +40,7 @@
 	<div class="flex flex-col items-center gap-6">
 		<Button onclick={downloadTasksData} class="w-[300px]">Download data as JSON</Button>
 		<Button onclick={() => fileInput.click()} class="w-[300px]">Upload JSON data</Button>
+		<Button onclick={eraseAllData} class="w-[300px]">Erase all storage data</Button>
 
 		<div class="flex items-center gap-2">
 			<Checkbox

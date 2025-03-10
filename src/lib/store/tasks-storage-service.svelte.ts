@@ -16,6 +16,10 @@ export function loadTasksFromLocalStorage() {
 	loadTasksFromJsonData(jsonData);
 }
 
+export function eraseAllData() {
+	localStorage.removeItem('tasksState');
+}
+
 export function loadTasksFromJsonData(jsonData: string | null) {
 	if (jsonData) {
 		try {

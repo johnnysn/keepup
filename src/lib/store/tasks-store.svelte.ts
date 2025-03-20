@@ -103,14 +103,14 @@ export function removeRecurrency(id: string) {
 	}
 }
 
-export function updateDailyArrayOrder(items: Task[]) {
+export function updateDailyArrayOrder(ids: string[]) {
 	const strDate = formatDate(new Date());
 
 	if (tasks.daily.has(strDate)) {
 		const dailyArr = [...tasks.daily.get(strDate)!];
 
-		for (let i = 0; i < items.length; i++) {
-			dailyArr[i] = items[i].id;
+		for (let i = 0; i < ids.length; i++) {
+			dailyArr[i] = ids[i];
 		}
 
 		tasks.daily.set(strDate, dailyArr);

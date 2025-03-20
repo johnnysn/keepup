@@ -14,20 +14,32 @@
 	import { Trash2, ChevronsDown, ChevronsUp } from 'lucide-svelte';
 
 	type Props = {
-		task: Task;
+		taskId: string;
 	};
 
-	const { task }: Props = $props();
-	const id = `chk${task.id}`;
+	const { taskId }: Props = $props();
+	let task = $state<Task>({
+		id: '1111',
+		name: '',
+		description: '',
+		done: false,
+		date: new Date()
+	});
+
+	$effect(() => {
+		if (taskId && tasks.data.has(taskId)) {
+			task = tasks.data.get(taskId)!;
+		}
+	});
+
+	const id = `chk${taskId}`;
 
 	let nameInput: HTMLInputElement;
 
-	let nameValue = $state(task.name);
-	let descriptionValue = $state(task.description);
 	let editMode = $state(false);
 	let isRecurrent = $derived(tasks.recurrent.has(task.name));
 
-	const labelClass = $derived(`${task.done ? 'line-through' : ''}`);
+	const labelClass = $derived(`${task?.done ? 'line-through' : ''}`);
 
 	$effect(() => {
 		// if (task.id === tasks.empty) {
@@ -37,8 +49,8 @@
 
 	function updateTask() {
 		patchTask(task.id, {
-			name: nameValue,
-			description: descriptionValue
+			name: task.name,
+			description: task.description
 		});
 	}
 
@@ -86,7 +98,7 @@
 						labelClass
 					)}
 					onblur={updateTask}
-					bind:value={nameValue}
+					bind:value={task.name}
 					bind:this={nameInput}
 				/>
 			</Label>
@@ -127,7 +139,7 @@
 				class="w-[270px] border-none bg-transparent p-0 text-sm text-foreground/50 focus:text-foreground focus:outline-none focus:ring-0 md:w-full"
 				placeholder="Add description here"
 				onblur={updateTask}
-				bind:value={descriptionValue}
+				bind:value={task.description}
 			/>
 		</div>
 	{/if}

@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { dragHandleZone, dragHandle, type DndEvent } from 'svelte-dnd-action';
-	import type { Task } from '$lib/types/task';
 	import { addNewTaskNow, tasks, updateDailyArrayOrder } from '$lib/store/tasks-store.svelte';
 	import TaskItem from './TaskItem.svelte';
 	import { GripVertical, Plus } from 'lucide-svelte';
-	// import { blur } from 'svelte/transition';
 	import Button from './ui/button/button.svelte';
 	import { dateFromStr } from '$lib/utils';
 
@@ -13,7 +11,11 @@
 		strDate: string;
 	};
 
-	let items = $state<Task[]>([]);
+	type Item = {
+		id: string;
+	};
+
+	let items = $state<Item[]>([]);
 	let { strDate }: Props = $props();
 
 	$effect(() => {
@@ -21,18 +23,18 @@
 			items = tasks.daily
 				.get(strDate)!
 				// .filter((id) => tasks.data.has(id))
-				.map((id) => tasks.data.get(id)!);
+				.map((id) => ({ id }));
 			// console.log(items);
 		}
 	});
 
 	const flipDurationMs = 300;
-	function handleDndConsider(e: CustomEvent<DndEvent<Task>>) {
+	function handleDndConsider(e: CustomEvent<DndEvent<Item>>) {
 		items = e.detail.items;
 	}
-	function handleDndFinalize(e: CustomEvent<DndEvent<Task>>) {
+	function handleDndFinalize(e: CustomEvent<DndEvent<Item>>) {
 		// items = e.detail.items;
-		updateDailyArrayOrder(e.detail.items);
+		updateDailyArrayOrder(e.detail.items.map((item) => item.id));
 	}
 	function addTask() {
 		addNewTaskNow(items.length, dateFromStr(strDate));
@@ -53,7 +55,7 @@
 			<div use:dragHandle class="mx-1 text-foreground/50 hover:text-foreground">
 				<GripVertical class="size-6" />
 			</div>
-			<TaskItem task={item} />
+			<TaskItem taskId={item.id} />
 		</li>
 	{/each}
 </ul>
